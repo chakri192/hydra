@@ -109,28 +109,29 @@ button { font: inherit; border: none; outline: none; }
 }
 .brand { display: flex; align-items: center; gap: 12px; padding: 4px 4px 14px; }
 .mark {
-  width: 42px; height: 42px; border-radius: 12px;
+  width: 44px; height: 44px; border-radius: 13px;
   display: grid; place-items: center;
-  background: var(--sewage);
-  color: white; font-weight: 800; letter-spacing: .04em;
-  box-shadow: 0 6px 16px rgba(94, 105, 84, 0.25);
+  background: #3b82f6;
+  color: white; font-weight: 800; font-size: 16px; letter-spacing: .04em;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+  flex-shrink: 0;
 }
 .brand h1 { font-size: 18px; margin: 0; letter-spacing: .05em; color: var(--text); }
 .brand p { font-size: 11px; margin: 3px 0 0; color: var(--muted); }
-.nav { display: flex; flex-direction: column; gap: 8px; }
+.nav { display: flex; flex-direction: column; gap: 4px; }
 .nav a {
   text-decoration: none; color: var(--muted);
   display: flex; align-items: center; gap: 12px;
-  min-height: 44px; padding: 0 12px; border-radius: 10px;
+  min-height: 40px; padding: 0 10px; border-radius: 10px;
   font-size: 14px; font-weight: 500; transition: .2s;
 }
 .nav a span:first-child {
-  width: 28px; height: 28px; border-radius: 8px;
-  display: grid; place-items: center;
-  color: var(--muted); background: var(--bg); font-size: 11px; font-weight: 600;
+  width: 36px; height: 36px; border-radius: 9px;
+  display: grid; place-items: center; flex-shrink: 0;
+  color: var(--muted); background: transparent;
 }
 .nav a.active, .nav a:hover { color: var(--text); background: var(--line); }
-.nav a.active span:first-child { background: var(--text); color: var(--bg); }
+.nav a.active span:first-child { color: var(--text); }
 .main { margin-left: 240px; width: calc(100% - 240px); min-height: 100vh; }
 .top {
   position: sticky; top: 0; z-index: 2;
@@ -155,7 +156,11 @@ button { font: inherit; border: none; outline: none; }
 .btn { cursor: pointer; }
 .btn:hover { background: var(--line); }
 .content { padding: 0 32px 32px; }
+.content.page { padding-top: 28px; }
 .page[hidden] { display: none; }
+.page-head { margin-bottom: 24px; }
+.page-head h3 { margin: 0 0 6px; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.page-head p { margin: 0; color: var(--muted); font-size: 14px; }
 .metrics { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
 .metric {
   background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px;
@@ -165,7 +170,7 @@ button { font: inherit; border: none; outline: none; }
 .metric small { display: block; color: var(--muted); font-size: 13px; font-weight: 600; margin-bottom: 12px; }
 .metric strong { font-size: 32px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; }
 .metric p { margin: 8px 0 0; color: var(--dim); font-size: 12px; font-weight: 500; }
-.grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px; margin-bottom: 24px; }
+.grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px; margin-bottom: 24px; align-items: start; }
 .chart-card, .zone-card {
   background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px;
   box-shadow: var(--shadow);
@@ -192,56 +197,41 @@ canvas { width: 100%; height: 100%; display: block; }
 .mini-pct { font-weight: 700; font-size: 20px; line-height: 1; }
 .mini-bar { grid-column: 1 / -1; height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; margin-top: 4px; }
 .mini-bar div { height: 100%; border-radius: 99px; transition: width .4s, background .4s; }
-.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+/* ── tank cards (compact row layout) ── */
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.cards--3col { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .tank-card {
-  background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px;
-  min-height: 290px; box-shadow: var(--shadow);
-  transition: background 0.3s, border-color 0.3s;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px;
+  box-shadow: var(--shadow); transition: background 0.3s, border-color 0.3s;
+  display: flex; flex-direction: column; gap: 14px;
 }
-.tank-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 16px; }
-.tank-id { display: flex; align-items: center; gap: 14px; min-width: 0; }
-.icon {
-  width: 46px; height: 46px; border-radius: 12px;
-  background: var(--bg); border: 1px solid var(--line);
-  display: grid; place-items: center; color: var(--text); font-weight: 700; font-size: 14px;
-}
-.tank-id h3 { margin: 0; font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tank-id p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
-.tag { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 6px 12px; border: 1px solid transparent; }
-.tag.ok { color: var(--green); background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); }
-.tag.warn { color: var(--amber); background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); }
-.tag.crit { color: var(--red); background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); }
-.tank-body { display: grid; grid-template-columns: 1fr 160px 1fr; gap: 24px; align-items: center; padding-top: 24px; }
-.label h4 { font-size: 18px; font-weight: 700; line-height: 1.3; margin: 0 0 16px; }
-.kv { margin-top: 12px; }
-.kv span { display: block; color: var(--muted); font-size: 12px; margin-bottom: 4px; font-weight: 500; }
-.kv b { font-size: 18px; font-weight: 700; color: var(--text); }
-.vessel {
-  height: 200px; border-radius: 16px; position: relative; overflow: hidden;
-  background: var(--vessel-bg); border: 4px solid var(--line);
-  box-shadow: inset 0 4px 12px rgba(0,0,0,0.05);
-  transition: background 0.3s, border-color 0.3s;
-}
-.water {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 0%;
-  background: var(--sewage);
-  transition: height .7s cubic-bezier(.2,.8,.2,1);
-}
-.water:before {
-  content: ""; position: absolute; left: -10%; right: -10%; top: -8px; height: 16px;
-  background: var(--sewage-light); border-radius: 50%;
-  animation: wave 3.8s ease-in-out infinite;
-}
-@keyframes wave { 0%, 100% { transform: translateX(-2%) } 50% { transform: translateX(3%) } }
-.vessel strong {
-  position: absolute; left: 0; right: 0; bottom: 20px; text-align: center;
-  color: #ffffff; font-size: 24px; font-weight: 800; text-shadow: 0 2px 6px rgba(0,0,0,0.5);
-}
-.vessel em { position: absolute; right: -40px; color: var(--dim); font-style: normal; font-size: 11px; font-weight: 600; }
-.m100 { top: 0; } .m75 { top: 25%; } .m50 { top: 50%; } .m25 { top: 75%; } .m0 { bottom: 0; }
-.telemetry { display: grid; gap: 16px; }
-.telemetry .item span { display: block; color: var(--muted); font-weight: 600; font-size: 12px; margin-bottom: 4px; }
-.telemetry .item b { font-size: 18px; font-weight: 700; color: var(--text); }
+/* top row: name + tag */
+.tank-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.tank-id { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.icon { display: none; } /* removed — adds no info */
+.tank-id h3 { margin: 0; font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tank-id p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+.tag { font-size: 11px; font-weight: 600; border-radius: 999px; padding: 4px 10px; border: 1px solid transparent; white-space: nowrap; }
+.tag.ok { color: var(--green); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.2); }
+.tag.warn { color: var(--amber); background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.2); }
+.tag.crit { color: var(--red); background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.2); }
+/* fill bar row */
+.tank-fill-row { display: flex; align-items: center; gap: 10px; }
+.tank-fill-pct { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; min-width: 48px; line-height: 1; }
+.tank-fill-bar-wrap { flex: 1; height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.tank-fill-bar { height: 100%; border-radius: 99px; transition: width .7s cubic-bezier(.2,.8,.2,1), background .4s; }
+/* stats row */
+.tank-stats { display: flex; gap: 0; border-top: 1px solid var(--line); padding-top: 10px; }
+.tank-stat { flex: 1; }
+.tank-stat span { display: block; color: var(--muted); font-size: 11px; font-weight: 500; margin-bottom: 3px; }
+.tank-stat b { font-size: 14px; font-weight: 700; color: var(--text); }
+.tank-stat + .tank-stat { border-left: 1px solid var(--line); padding-left: 14px; margin-left: 14px; }
+/* keep kv/label/vessel/telemetry/wave defs but they won't be used */
+.kv { display: none; }
+.vessel { display: none; }
+.telemetry { display: none; }
+.label { display: none; }
+.tank-body { display: none; }
 .toast {
   position: fixed; right: 24px; bottom: 24px; z-index: 4;
   background: var(--text); border: 1px solid var(--text);
@@ -251,7 +241,33 @@ canvas { width: 100%; height: 100%; display: block; }
 }
 .toast.show { opacity: 1; transform: translateY(0); }
 #map { height: 500px; border-radius: 16px; border: 1px solid var(--line); z-index: 1; }
-@media(max-width: 1180px) { .cards { grid-template-columns: 1fr; } .grid { grid-template-columns: 1fr; } }
+/* skeleton loading */
+@keyframes shimmer { 0%,100%{opacity:.4} 50%{opacity:.9} }
+.skeleton-val { animation: shimmer 1.4s ease-in-out infinite; }
+.skeleton-line { animation: shimmer 1.4s ease-in-out 0.2s infinite; }
+
+/* metric hierarchy */
+.metric--primary {
+  border-color: var(--sewage);
+  background: linear-gradient(135deg, var(--panel) 0%, rgba(94,105,84,0.06) 100%);
+}
+.metric--primary strong { font-size: 42px; }
+
+/* header action group */
+.action-group { display: flex; gap: 6px; }
+.action-group .btn { padding: 8px 10px; }
+.export-btn { padding: 8px 14px !important; }
+
+/* weather pill */
+.weather-icon { font-style: normal; }
+
+/* net flow in card */
+.net-flow b { font-size: 15px; }
+
+.metric-sub { margin: 8px 0 0; color: var(--dim); font-size: 12px; font-weight: 500; }
+
+
+@media(max-width: 1200px) { .cards--3col { grid-template-columns: repeat(2, 1fr); } .grid { grid-template-columns: 1fr; } }
 @media(max-width: 1120px) {
   .actions { flex-direction: column; align-items: stretch; width: 100%; margin-top: 10px; }
   .top { flex-direction: column; align-items: flex-start; }
@@ -269,17 +285,14 @@ canvas { width: 100%; height: 100%; display: block; }
   .actions { flex-direction: row; align-items: center; width: auto; }
   .content { padding: 0 20px 24px; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .tank-body { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 32px; }
-  .label h4 { margin-bottom: 8px; }
-  .kv { display: inline-block; margin: 10px 15px; }
-  .vessel { width: 180px; }
-  .telemetry { grid-template-columns: repeat(3, 1fr); text-align: center; }
+  .cards { grid-template-columns: 1fr; }
 }
 @media(max-width: 520px) {
   .metrics { grid-template-columns: 1fr; }
   .tank-top { align-items: flex-start; flex-direction: column; }
-  .telemetry { grid-template-columns: 1fr; gap: 12px; text-align: left; }
   .canvas-wrap { height: 220px; }
+  .tank-stats { flex-wrap: wrap; gap: 8px; }
+  .tank-stat + .tank-stat { border-left: none; padding-left: 0; margin-left: 0; border-top: 1px solid var(--line); padding-top: 8px; }
 }
 </style>
 </head>
@@ -291,8 +304,18 @@ canvas { width: 100%; height: 100%; display: block; }
       <div><h1>HYDRA</h1><p>Urban Sanitation</p></div>
     </div>
     <nav class="nav">
-      <a class="active" href="#overview" data-page="overview"><span>OV</span><span>Overview</span></a>
-      <a href="#zones" data-page="zones"><span>ZN</span><span>Geographic Map</span></a>
+      <a class="active" href="#overview" data-page="overview">
+        <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+        <span>Overview</span>
+      </a>
+      <a href="#nodes" data-page="nodes">
+        <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="3" ry="2"/><ellipse cx="4" cy="19" rx="3" ry="2"/><ellipse cx="20" cy="19" rx="3" ry="2"/><path d="M12 7v4m0 0-6 6m6-6 6 6"/></svg></span>
+        <span>Nodes</span>
+      </a>
+      <a href="#zones" data-page="zones">
+        <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.686 2 6 4.686 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.314-2.686-6-6-6z"/><circle cx="12" cy="8" r="2"/></svg></span>
+        <span>Map</span>
+      </a>
     </nav>
   </aside>
 
@@ -303,21 +326,26 @@ canvas { width: 100%; height: 100%; display: block; }
         <p>Distance and sewer-level monitoring across active Bengaluru nodes.</p>
       </div>
       <div class="actions">
-        <div class="pill" id="weatherBadge">🌤️ Weather: Loading...</div>
-        <div class="pill" id="thresholdBadge">🚦 Alert Threshold: 80%</div>
-        <button class="pill btn" id="btnTheme">◐ Theme</button>
-        <button class="pill btn" id="btnRefresh">↺ Refresh</button>
-        <button class="pill btn" id="btnExport">↓ Export</button>
+        <div class="pill weather-pill" id="weatherBadge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="weather-svg"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><line x1="8" y1="19" x2="8" y2="21"/><line x1="8" y1="13" x2="8" y2="15"/><line x1="16" y1="19" x2="16" y2="21"/><line x1="16" y1="13" x2="16" y2="15"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="12" y1="15" x2="12" y2="17"/></svg>
+          <span id="weatherText">Loading...</span>
+        </div>
+        <div class="pill threshold-pill" id="thresholdBadge">Threshold: 80%</div>
+        <div class="action-group">
+          <button class="pill btn" id="btnTheme" title="Toggle theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
+          <button class="pill btn" id="btnRefresh" title="Refresh data"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg></button>
+          <button class="pill btn export-btn" id="btnExport">Export CSV</button>
+        </div>
         <div class="status" id="modeBadge"><i></i><span>Connecting</span></div>
       </div>
     </header>
 
     <section class="content page" id="overviewPage">
       <div class="metrics">
-        <div class="metric"><small>KR Puram Node</small><strong id="mLive">--%</strong><p id="mLiveSub">Waiting for sensor</p></div>
-        <div class="metric"><small>Surface Gap</small><strong id="mDistance">-- cm</strong><p>Ultrasonic distance</p></div>
-        <div class="metric"><small>Critical Manholes</small><strong id="mCritical">0</strong><p id="mCriticalSub">No active backups</p></div>
-        <div class="metric"><small>System Load</small><strong id="mAverage">--%</strong><p>Overall network strain</p></div>
+        <div class="metric metric--primary"><small>KR Puram Node</small><strong id="mLive" class="skeleton-val">--%</strong><p id="mLiveSub" class="metric-sub skeleton-line">Connecting to sensor…</p></div>
+        <div class="metric"><small>Surface Gap</small><strong id="mDistance" class="skeleton-val">-- cm</strong><p class="metric-sub">Ultrasonic distance</p></div>
+        <div class="metric"><small>Critical Manholes</small><strong id="mCritical" class="skeleton-val">–</strong><p id="mCriticalSub" class="metric-sub skeleton-line">Checking…</p></div>
+        <div class="metric"><small>Network Load</small><strong id="mAverage" class="skeleton-val">--%</strong><p class="metric-sub">6-node average</p></div>
       </div>
 
       <div class="grid">
@@ -331,18 +359,25 @@ canvas { width: 100%; height: 100%; display: block; }
 
         <aside class="zone-card">
           <div class="card-head">
-            <div><h3>Node Index</h3><p>Tap a catch basin to view telemetry.</p></div>
+            <div><h3>Node Index</h3><p>Tap a node to inspect.</p></div>
           </div>
           <div class="zone-list" id="zoneList"></div>
         </aside>
       </div>
+    </section>
 
-      <section class="cards" id="tankCards"></section>
+    <section class="content page" id="nodesPage" hidden>
+      <div class="page-head">
+        <h3>All Nodes</h3>
+        <p>Live telemetry across all 6 monitored chambers.</p>
+      </div>
+      <section class="cards cards--3col" id="tankCards"></section>
     </section>
 
     <section class="content page" id="zonesPage" hidden>
-      <div class="card-head" style="margin-bottom: 20px;">
-        <div><h3>Geographic Map</h3><p>Physical placement of monitored chambers across East Bengaluru.</p></div>
+      <div class="page-head">
+        <h3>Geographic Map</h3>
+        <p>Physical placement of monitored chambers across Bengaluru.</p>
       </div>
       <div id="map"></div>
     </section>
@@ -361,7 +396,7 @@ canvas { width: 100%; height: 100%; display: block; }
   var series=[];
   
   // Weather API Setup (Replace with your actual OpenWeatherMap API Key)
-  var weatherAPIKey = '96c6a52c9a8e35478012b06750690852';
+  var weatherAPIKey = 'api-key';
   // Bengaluru Coordinates
   var blrLat = 12.9716, blrLon = 77.5946;
   
@@ -383,9 +418,16 @@ canvas { width: 100%; height: 100%; display: block; }
   function stateClass(p){return p>=ALERT_PERCENT?'crit':p>=(ALERT_PERCENT-20)?'warn':'ok'}
   function color(p){return p>=ALERT_PERCENT?'#ef4444':p>=(ALERT_PERCENT-20)?'#f59e0b':'#10b981'}
   
+  var SVG_RAIN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><line x1="8" y1="19" x2="8" y2="21"/><line x1="8" y1="13" x2="8" y2="15"/><line x1="16" y1="19" x2="16" y2="21"/><line x1="16" y1="13" x2="16" y2="15"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="12" y1="15" x2="12" y2="17"/></svg>';
+  var SVG_SUN  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+  var SVG_WARN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+  function setWeatherBadge(icon, text) {
+    byId('weatherBadge').innerHTML = icon + '<span>' + text + '</span>';
+  }
+
   function fetchWeather() {
     if(weatherAPIKey === 'YOUR_OPENWEATHER_API_KEY_HERE') {
-      byId('weatherBadge').innerHTML = '🌤️ Add API Key';
+      setWeatherBadge(SVG_WARN, 'No API Key');
       return;
     }
     var url = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + blrLat + '&lon=' + blrLon + '&appid=' + weatherAPIKey;
@@ -409,14 +451,14 @@ canvas { width: 100%; height: 100%; display: block; }
 
         if(rainIncoming) {
           ALERT_PERCENT = 60;
-          byId('weatherBadge').innerHTML = '🌧️ Rain Forecasted (12h)';
-          byId('thresholdBadge').innerHTML = '🚦 Threshold: 60% (Monsoon Mode)';
+          setWeatherBadge(SVG_RAIN, 'Rain expected (12h)');
+          byId('thresholdBadge').innerHTML = 'Threshold: 60% — Monsoon';
           byId('thresholdBadge').style.borderColor = 'var(--amber)';
           byId('thresholdBadge').style.color = 'var(--amber)';
         } else {
           ALERT_PERCENT = 80;
-          byId('weatherBadge').innerHTML = '🌤️ Clear Forecast (12h)';
-          byId('thresholdBadge').innerHTML = '🚦 Threshold: 80% (Normal)';
+          setWeatherBadge(SVG_SUN, 'Clear (12h)');
+          byId('thresholdBadge').innerHTML = 'Threshold: 80%';
           byId('thresholdBadge').style.borderColor = 'var(--line)';
           byId('thresholdBadge').style.color = 'var(--text)';
         }
@@ -425,11 +467,11 @@ canvas { width: 100%; height: 100%; display: block; }
       .catch(function(e) {
         console.log('Weather fetch failed:', e.message);
         if (e.message.includes('401')) {
-          byId('weatherBadge').innerHTML = '⚠️ Invalid API Key (Wait 2h)';
+          setWeatherBadge(SVG_WARN, 'Invalid API key');
         } else if (e.message.includes('Failed to fetch')) {
-          byId('weatherBadge').innerHTML = '⚠️ No Internet Access';
+          setWeatherBadge(SVG_WARN, 'Offline');
         } else {
-          byId('weatherBadge').innerHTML = '⚠️ Weather Offline';
+          setWeatherBadge(SVG_WARN, 'Weather unavailable');
         }
       });
   }
@@ -477,14 +519,17 @@ canvas { width: 100%; height: 100%; display: block; }
       sum+=zones[i].level;
       if(zones[i].level>=ALERT_PERCENT)crit.push(zones[i].name);
     }
+    // remove skeleton once we have real data
+    var skels = document.querySelectorAll('.skeleton-val,.skeleton-line');
+    for(var j=0;j<skels.length;j++) skels[j].classList.remove('skeleton-val','skeleton-line');
     byId('mLive').textContent=round(live.level)+'%';
     byId('mLive').style.color=color(live.level);
-    byId('mLiveSub').textContent=simulation?'Waiting for sensor':state(live.level);
+    byId('mLiveSub').textContent=simulation?'Simulation active':state(live.level);
     byId('mDistance').textContent=distanceFromLevel(live.level).toFixed(1)+' cm';
-    byId('mDistance').style.color=live.level>=ALERT_PERCENT?'#ef4444':'var(--text)';
+    byId('mDistance').style.color=color(live.level);
     byId('mCritical').textContent=crit.length;
     byId('mCritical').style.color=crit.length?'#ef4444':'#10b981';
-    byId('mCriticalSub').textContent=crit.length?crit.join(', '):'No active backups';
+    byId('mCriticalSub').textContent=crit.length?crit.join(', '):'All nodes within limits';
     byId('mAverage').textContent=round(sum/zones.length)+'%';
   }
 
@@ -514,13 +559,21 @@ canvas { width: 100%; height: 100%; display: block; }
     });
     var html='';
     ordered.forEach(function(z){
-      var p=round(z.level),dist=distanceFromLevel(z.level),st=state(z.level),sc=stateClass(z.level);
+      var p=round(z.level),dist=distanceFromLevel(z.level),st=state(z.level),sc=stateClass(z.level),c=color(p);
+      var netFlow=round(z.fill-z.drain);
+      var netColor=netFlow>0?'var(--amber)':'var(--green)';
+      var netStr=(netFlow>0?'+':'')+fmt(netFlow)+' L/m';
       html+='<article class="tank-card" id="area-'+z.id+'">'
-        +'<div class="tank-top"><div class="tank-id"><div class="icon">MH</div><div><h3>'+z.name+'</h3><p>'+z.meta+'</p></div></div><div class="tag '+sc+'">'+st+'</div></div>'
-        +'<div class="tank-body">'
-        +'<div class="label"><h4>Sewer Level<br>Monitoring</h4><div class="kv"><span>Current Volume (L)</span><b>'+fmt(z.capacity*z.level/100)+'</b></div><div class="kv"><span>Flow Capacity (L)</span><b>'+fmt(z.capacity)+'</b></div></div>'
-        +'<div class="vessel"><div class="water" style="height:'+p+'%"></div><strong>'+p+'%</strong><em class="m100">100%</em><em class="m75">75%</em><em class="m50">50%</em><em class="m25">25%</em><em class="m0">0%</em></div>'
-        +'<div class="telemetry"><div class="item"><span>Surface Gap</span><b>'+dist.toFixed(1)+' cm</b></div><div class="item"><span>Inflow Rate</span><b>'+round(z.fill)+' L/m</b></div><div class="item"><span>Outflow Rate</span><b>'+round(z.drain)+' L/m</b></div></div>'
+        +'<div class="tank-top"><div class="tank-id"><div><h3>'+z.name+'</h3><p>'+z.meta+'</p></div></div><div class="tag '+sc+'">'+st+'</div></div>'
+        +'<div class="tank-fill-row">'
+        +'<div class="tank-fill-pct" style="color:'+c+'">'+p+'%</div>'
+        +'<div class="tank-fill-bar-wrap"><div class="tank-fill-bar" style="width:'+p+'%;background:'+c+'"></div></div>'
+        +'</div>'
+        +'<div class="tank-stats">'
+        +'<div class="tank-stat"><span>Gap</span><b>'+dist.toFixed(1)+' cm</b></div>'
+        +'<div class="tank-stat"><span>Inflow</span><b>'+round(z.fill)+' L/m</b></div>'
+        +'<div class="tank-stat"><span>Outflow</span><b>'+round(z.drain)+' L/m</b></div>'
+        +'<div class="tank-stat"><span>Net</span><b style="color:'+netColor+'">'+netStr+'</b></div>'
         +'</div>'
         +'</article>';
     });
@@ -549,14 +602,14 @@ canvas { width: 100%; height: 100%; display: block; }
   }
 
   function showPage(page){
-    var isZones=page==='zones';
-    byId('overviewPage').hidden=isZones;
-    byId('zonesPage').hidden=!isZones;
+    byId('overviewPage').hidden = page !== 'overview';
+    byId('nodesPage').hidden = page !== 'nodes';
+    byId('zonesPage').hidden = page !== 'zones';
     var links=document.querySelectorAll('.nav a');
     for(var i=0;i<links.length;i++){
       links[i].className=links[i].getAttribute('data-page')===page?'active':'';
     }
-    if(isZones) {
+    if(page==='zones') {
       initMap();
       setTimeout(function(){ map.invalidateSize(); }, 100);
     }
@@ -564,8 +617,8 @@ canvas { width: 100%; height: 100%; display: block; }
 
   function openArea(id){
     focused=id;
-    showPage('overview');
-    if(location.hash!=='#overview')location.hash='overview';
+    showPage('nodes');
+    if(location.hash!=='#nodes')location.hash='nodes';
     renderAll(false);
     setTimeout(function(){
       var target=byId('area-'+focused);
@@ -574,7 +627,8 @@ canvas { width: 100%; height: 100%; display: block; }
   }
 
   function syncRoute(){
-    showPage(location.hash==='#zones'?'zones':'overview');
+    var h = location.hash.replace('#','');
+    showPage(h==='zones'?'zones':h==='nodes'?'nodes':'overview');
   }
 
   function fetchWithTimeout(url,ms){
@@ -712,9 +766,9 @@ canvas { width: 100%; height: 100%; display: block; }
   };
 
   byId('btnRefresh').onclick = function() {
-    var btn = this; btn.textContent = '...';
+    var btn = this; btn.style.opacity = '0.5';
     fetchLevel(); fetchWeather();
-    setTimeout(function(){ btn.textContent = '↺ Refresh'; }, 500);
+    setTimeout(function(){ btn.style.opacity = '1'; }, 500);
   };
   
   byId('btnExport').onclick = function() {
@@ -744,6 +798,7 @@ canvas { width: 100%; height: 100%; display: block; }
 </script>
 </body>
 </html>
+
 )HYDRA";
 
 void handleRoot() { server.send_P(200, "text/html", PAGE); }

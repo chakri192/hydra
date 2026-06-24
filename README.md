@@ -1,6 +1,6 @@
 # Project HYDRA
 
-A real-time water level monitor for overhead tanks, built on the ESP8266. An ultrasonic sensor measures tank depth every 100ms and serves a live dashboard over Wi-Fi — buzzer alert included when the tank hits 80%.
+A real-time water/sewage level monitor built on the ESP8266. An ultrasonic sensor measures chamber depth every 100ms and serves a live multi-node dashboard over Wi-Fi — buzzer alert included when the live node hits 80% (auto-lowers to 60% when rain is forecast).
 
 **Live dashboard served at:** `http://<ESP-IP>/`
 
@@ -8,18 +8,21 @@ A real-time water level monitor for overhead tanks, built on the ESP8266. An ult
 
 ## Overview
 
-Mount the sensor above your tank, flash the firmware, connect to Wi-Fi, and open the dashboard in any browser on your local network. No cloud, no subscriptions, no app — just your ESP8266 acting as its own web server.
+Mount the sensor above your tank or chamber, flash the firmware, connect to Wi-Fi, and open the dashboard in any browser on your local network. No cloud, no subscriptions, no app — just your ESP8266 acting as its own web server. Only **one** node (`KR Puram Chamber`) is backed by real hardware; the other five nodes shown in the dashboard are simulated for layout/demo purposes (see the Dashboard section below).
 
 ---
 
 ## Features
 
-- **Live water level** — ultrasonic reading every 100ms, polled by the dashboard every second
-- **Wi-Fi dashboard** — dark/light mode, trend chart (60s rolling), per-chamber cards, CSV export
-- **Buzzer alert** — rapid beep when tank exceeds 80% full
-- **Simulation mode** — dashboard auto-falls back to simulated data if the ESP is unreachable
-- **Leaflet map** — zone/location view built into the dashboard
-- **Weather widget** — pulls local conditions via open-meteo (no API key needed)
+- **Live water level** — ultrasonic reading every 100ms, polled by the dashboard roughly every 0.8s
+- **Multi-node dashboard** — Overview, Nodes, and Map pages; only the first node (`krpuram`) reflects the real sensor, the rest are simulated
+- **Trend chart** — 60-second rolling distance graph with hover tooltip and alert-threshold band
+- **Buzzer alert** — rapid beep when the live node exceeds the alert threshold
+- **Weather-adaptive threshold** — pulls a Bengaluru forecast from OpenWeatherMap; if rain/thunderstorms are expected in the next ~12h, the alert threshold drops from 80% to 60%
+- **Simulation mode** — dashboard auto-falls back to simulated data for the live node if the ESP is unreachable
+- **Leaflet map** — node locations plotted on an OpenStreetMap/CARTO basemap
+- **CSV export** — downloads a snapshot of all node readings
+- **Dark / light mode** toggle
 - **Zero dependencies** — single `.ino` file, HTML/CSS/JS embedded via `PROGMEM`
 
 ---
@@ -47,6 +50,8 @@ Mount the sensor above your tank, flash the firmware, connect to Wi-Fi, and open
 
 ## Configuration
 
+### Firmware settings
+
 Edit the top of `water.ino` before flashing:
 
 ```cpp
@@ -55,10 +60,24 @@ const char* password = "YOUR_PASSWORD";
 
 #define TANK_EMPTY_CM  30   // distance (cm) when tank is empty
 #define TANK_FULL_CM    2   // distance (cm) when tank is full
-#define ALERT_PERCENT  80   // buzzer triggers above this fill %
+#define ALERT_PERCENT  80   // buzzer triggers above this fill % (firmware side)
 ```
 
 To get `TANK_EMPTY_CM` and `TANK_FULL_CM`: mount the sensor, open Serial Monitor at 115200 baud, and note the raw distance values at empty and full.
+
+Note: the dashboard's alert threshold (used for the trend-chart band, status tags, and weather-driven 80%/60% switch) is configured separately inside the embedded JavaScript (`ALERT_PERCENT` near the top of the `<script>` block), not from the firmware `#define`. Keep both in sync if you change one.
+
+### Weather widget API key
+
+The dashboard's weather pill calls OpenWeatherMap directly from the browser. Find this line inside the `<script>` block in `water.ino` and set your own key:
+
+```js
+var weatherAPIKey = 'api-key';
+```
+
+Get a free key at [openweathermap.org](https://openweathermap.org/api). Without a valid key, the badge shows "No API Key" / "Invalid API key" and the alert threshold simply stays at the default 80%.
+
+The widget is hardcoded to Bengaluru coordinates (`blrLat`, `blrLon` in the script) — edit these if you're monitoring a chamber elsewhere.
 
 ---
 
@@ -121,11 +140,23 @@ curl http://192.168.x.x/level
 
 ## Dashboard
 
-- **Trend chart** — 60-second rolling distance graph with hover tooltip
-- **Tank cards** — fill percentage, gap in cm, status badge (OK / ALERT / FULL)
-- **CSV export** — downloads a snapshot of all chamber readings
-- **Dark / light mode** — toggle in the top bar
-- **Simulation mode** — amber badge shown when ESP is unreachable; chart runs on synthetic data so you can preview the UI without hardware
+### Pages
+
+The dashboard is organized into three pages, navigable from the left sidebar (or via URL hash: `#overview`, `#nodes`, `#zones`):
+
+- **Overview** — primary live-node metric card, surface-gap distance, critical-node count, network average, real-time trend chart, and a compact node index
+- **Nodes** — full card grid for all six configured nodes (fill %, gap in cm, inflow/outflow, net flow, status tag)
+- **Map** — Leaflet map plotting all node coordinates
+
+### Behavior notes
+
+- **Only the first node (`krpuram` / "KR Puram Chamber") is real** — its level comes from `GET /level`. The other five nodes (Whitefield, Jayanagar, Hebbal, Electronic City, Yelahanka) are client-side simulated values that drift over time, included to make the multi-node layout demonstrable without extra hardware.
+- **Trend chart** — 60-second rolling distance graph for the live node only, with hover tooltip and a shaded/dashed band marking the current alert threshold.
+- **Status badges** — each node is tagged `Normal Flow` / `High Volume` / `Critical Backup` based on the current alert threshold.
+- **CSV export** — downloads `hydra_sanitation_log.csv` with name, fill %, gap (cm), and status for all nodes.
+- **Dark / light mode** — toggle in the top bar.
+- **Simulation mode** — amber "Simulation Mode" badge shown when `/level` is unreachable or times out (~850ms); the live node then falls back to the same drift simulation used for the other five.
+- **Weather pill** — shows current conditions near Bengaluru and adjusts the alert threshold (80% normal / 60% if rain is forecast within ~12h); refreshes every 15 minutes.
 
 ---
 
@@ -135,9 +166,10 @@ curl http://192.168.x.x/level
 2. Every 100ms, it pulses the HC-SR04 TRIG pin and measures the ECHO pulse duration
 3. Distance is converted to a fill percentage using the configured `TANK_EMPTY_CM` / `TANK_FULL_CM` range
 4. `GET /level` returns the latest percentage as plain text
-5. The dashboard polls `/level` every second and updates the UI
-6. If fill ≥ 80%, the buzzer toggles at 100ms intervals (rapid beep)
-7. The full dashboard HTML/CSS/JS (~700 lines) is stored in flash via `PROGMEM` to avoid RAM pressure
+5. The dashboard polls `/level` roughly every 0.8s and updates the live node; the other five nodes update from a local drift simulation
+6. If the live node's fill ≥ `ALERT_PERCENT` (firmware-side), the buzzer toggles at 100ms intervals (rapid beep)
+7. In the browser, the dashboard separately tracks its own `ALERT_PERCENT` for display/threshold purposes, which the weather widget can shift between 80% and 60%
+8. The full dashboard HTML/CSS/JS is stored in flash via `PROGMEM` to avoid RAM pressure
 
 ---
 
@@ -148,6 +180,7 @@ curl http://192.168.x.x/level
 | Flash | ~350KB (mostly the embedded dashboard) |
 | RAM | ~30KB at runtime |
 | Sensor poll | Every 100ms (non-blocking) |
+| Dashboard poll | `/level` every ~0.8s |
 | Wi-Fi | Idle between HTTP requests |
 
 ---
@@ -158,9 +191,12 @@ curl http://192.168.x.x/level
 |---|---|
 | Serial shows `WiFi FAILED` | Double-check SSID and password in the sketch |
 | Distance reads `-1` | Check TRIG/ECHO wiring; sensor may be out of range (max ~4m) |
-| Dashboard shows "Simulation" | ESP not reachable — check IP, same network, firewall |
-| Buzzer always on | `ALERT_PERCENT` too low or `TANK_FULL_CM` misconfigured |
+| Dashboard shows "Simulation Mode" | ESP not reachable — check IP, same network, firewall, or request timed out (>850ms) |
+| Weather badge shows "No API Key" / "Invalid API key" | Set a valid OpenWeatherMap key in `weatherAPIKey` inside the script |
+| Weather badge shows "Offline" | Browser couldn't reach OpenWeatherMap — check internet access on the client device (not the ESP) |
+| Buzzer always on | `ALERT_PERCENT` (firmware `#define`) too low or `TANK_FULL_CM` misconfigured |
 | Level jumps erratically | Add a small capacitor across the HC-SR04 VCC/GND; reduce electrical noise |
+| Other five nodes look "alive" with no extra sensors | Expected — they're client-side simulated, not real hardware (see Dashboard section above) |
 
 ---
 
