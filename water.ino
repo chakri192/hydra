@@ -1,3 +1,4 @@
+
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
@@ -26,8 +27,8 @@ const char* password = "REDACTED";
 #define MQ4_CLEAN_AIR    4.4    // Rs/Ro ratio in clean air (MQ-4 datasheet)
 #define MQ4_CURVE_A      1012.7 // ppm = A * (Rs/Ro)^B  — fitted to the CH4 curve
 #define MQ4_CURVE_B      -2.786
-#define GAS_ALERT_PPM    150    // buzzer ON at/above this methane ppm
-#define GAS_RELEASE_PPM  120    // ...and OFF once back below (hysteresis)
+#define GAS_ALERT_PPM    1000   // buzzer ON at/above this methane ppm
+#define GAS_RELEASE_PPM  900    // ...and OFF once back below (hysteresis)
 #define GAS_WARN_PPM     100    // "elevated" band on the display
 
 // ── I2C OLED (SH1106 128x64) ──  SDA→D2/GPIO4, SCL→D1/GPIO5 (ESP8266 defaults)
@@ -52,10 +53,10 @@ unsigned long lastBuzzerToggle = 0;
 unsigned long lastWifiCheck    = 0;
 bool buzzerState = false;
 
-#define SENSOR_INTERVAL 100
-#define GAS_INTERVAL    500
+#define SENSOR_INTERVAL 250    // water level every 250 ms — lighter on the web server
+#define GAS_INTERVAL    1000   // methane every 1 s
 #define BUZZER_RAPID    100
-#define WIFI_CHECK_MS   5000
+#define WIFI_CHECK_MS   10000
 
 float readDistanceCM();
 float readDistanceMedian();
@@ -78,21 +79,23 @@ float readDistanceCM() {
   digitalWrite(TRIG_PIN, HIGH);
   delayMicroseconds(10);
   digitalWrite(TRIG_PIN, LOW);
-  long d = pulseIn(ECHO_PIN, HIGH, 30000);
+  // 5 ms timeout ≈ 85 cm max range — plenty for a 30 cm chamber, and it keeps
+  // a missing echo from blocking the web server for 30 ms.
+  long d = pulseIn(ECHO_PIN, HIGH, 5000);
   if (d == 0) return -1;
   return d * 0.034 / 2.0;
 }
 
-// Median of up to 5 pings — rejects the spurious spikes HC-SR04 sensors
-// throw out, so the level reading and buzzer don't jitter.
+// Median of up to 3 pings — rejects spurious HC-SR04 spikes while keeping the
+// read fast so it barely stalls the web server.
 float readDistanceMedian() {
-  const int N = 5;
+  const int N = 3;
   float s[N];
   int valid = 0;
   for (int i = 0; i < N; i++) {
     float d = readDistanceCM();
     if (d >= 0) s[valid++] = d;
-    delay(8);  // let trailing echoes settle between pings
+    delay(4);  // let trailing echoes settle between pings
   }
   if (valid == 0) return -1;
   for (int i = 1; i < valid; i++) {   // insertion sort
@@ -129,8 +132,13 @@ float mq4Calibrate() {
 }
 
 // Estimated methane concentration in ppm from the MQ-4 log-log curve.
+// Averages a few Rs samples so one noisy ADC reading can't spike the ppm
+// (and falsely trip the buzzer). ~2.5 ms total — negligible.
 int readGasPPM() {
-  float ratio = mq4Rs() / mq4Ro;
+  float rs = 0;
+  for (int i = 0; i < 5; i++) { rs += mq4Rs(); delayMicroseconds(500); }
+  rs /= 5.0;
+  float ratio = rs / mq4Ro;
   float ppm = MQ4_CURVE_A * pow(ratio, MQ4_CURVE_B);
   if (ppm < 0) ppm = 0;
   if (ppm > 50000) ppm = 50000;
@@ -1752,10 +1760,10 @@ const char PAGE[] PROGMEM = R"HYDRA(
           },
         ];
         // Methane thresholds (ppm) are per-node:
-        //  • KR Puram — the real MQ-4 sensor — alarms at a tight 150 ppm.
+        //  • KR Puram — the real MQ-4 sensor — alarms at 1000 ppm.
         //  • Every other (simulated) node uses a 1000 ppm limit.
         function gasDangerFor(z) {
-          return z.id === "krpuram" ? 150 : 1000;
+          return z.id === "krpuram" ? 1000 : 1000;
         }
         function gasWarnFor(z) {
           return z.id === "krpuram" ? 100 : 700;
@@ -2782,7 +2790,10 @@ const char PAGE[] PROGMEM = R"HYDRA(
 
 )HYDRA";
 
-void handleRoot() { server.send_P(200, "text/html", PAGE); }
+void handleRoot() {
+  server.sendHeader("Cache-Control", "max-age=3600");  // let the browser cache the page for an hour
+  server.send_P(200, "text/html", PAGE);
+}
 void handleLevel() { server.send(200, "text/plain", String(waterLevel)); }
 void handleGas() { server.send(200, "text/plain", String(gasPPM)); }
 
@@ -2796,6 +2807,7 @@ void setup() {
   digitalWrite(BUZZER_PIN, LOW);
 
   Wire.begin();   // SDA=D2/GPIO4, SCL=D1/GPIO5 on ESP8266
+  Wire.setClock(100000);   // 100 kHz I2C — steadier for the SH1106 OLED
   if (display.begin(OLED_ADDR, true)) {
     oledOk = true;
     display.clearDisplay();
@@ -2859,12 +2871,14 @@ void loop() {
       Serial.print(level);
       Serial.println("%");
     }
+    server.handleClient();   // service any pending request right after the sensor read
   }
 
   if (now - lastGasRead >= GAS_INTERVAL) {
     lastGasRead = now;
     gasPPM = readGasPPM();
     Serial.print("CH4: "); Serial.print(gasPPM); Serial.println(" ppm");
+    server.handleClient();
   }
 
   // Latch the water alarm with hysteresis so it can't stutter at the threshold.
