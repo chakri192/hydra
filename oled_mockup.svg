@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 420" font-family="'DejaVu Sans Mono','Consolas',monospace">
+  <!-- device frame -->
+  <rect x="0" y="0" width="780" height="420" rx="22" fill="#0c0f14"/>
+  <rect x="14" y="14" width="752" height="392" rx="14" fill="#04060a" stroke="#182029" stroke-width="2"/>
+  <!-- OLED glass (128x64 mapped: k=5.6, origin 30,30) -->
+  <rect x="30" y="30" width="720" height="360" rx="6" fill="#000000"/>
+
+  <!-- pixels drawn in OLED blue-white -->
+  <g fill="#cfeeff" stroke="#cfeeff">
+    <!-- title bar -->
+    <text x="40" y="74" font-size="30" font-weight="700" stroke="none">HYDRA</text>
+    <text x="548" y="72" font-size="24" stroke="none">WiFi</text>
+    <line x1="30" y1="86" x2="750" y2="86" stroke-width="2"/>
+
+    <!-- WATER row -->
+    <!-- droplet icon -->
+    <path d="M69 118 L37 159 A24 24 0 1 0 101 159 Z" fill="#cfeeff" stroke="none"/>
+    <circle cx="69" cy="152" r="5" fill="#000" stroke="none"/>
+    <text x="120" y="150" font-size="26" stroke="none">WATER</text>
+    <text x="398" y="188" font-size="58" font-weight="700" stroke="none">72%</text>
+    <!-- level bar -->
+    <rect x="41" y="209" width="694" height="34" rx="8" fill="none" stroke="#cfeeff" stroke-width="3"/>
+    <rect x="47" y="215" width="494" height="22" rx="5" fill="#cfeeff" stroke="none"/>
+
+    <line x1="30" y1="260" x2="750" y2="260" stroke-width="2"/>
+
+    <!-- CH4 row -->
+    <!-- gas cloud icon -->
+    <g stroke="none" fill="#cfeeff">
+      <circle cx="58" cy="321" r="17"/>
+      <circle cx="70" cy="315" r="22"/>
+      <circle cx="93" cy="321" r="17"/>
+      <rect x="58" y="315" width="52" height="24"/>
+    </g>
+    <text x="140" y="322" font-size="26" stroke="none">CH4</text>
+    <text x="140" y="378" font-size="24" stroke="none">ELEV</text>
+    <text x="344" y="372" font-size="58" font-weight="700" stroke="none">3100</text>
+    <text x="512" y="372" font-size="26" stroke="none">ppm</text>
+  </g>
+
+  <!-- caption -->
+  <text x="390" y="410" font-size="15" fill="#5b6b7a" text-anchor="middle" font-family="Inter,sans-serif">SSD1306 128×64 OLED — live water level &amp; MQ-4 methane</text>
+</svg>
