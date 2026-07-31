@@ -9,3 +9,6 @@ Icon?
 *.hex
 *.elf
 build/
+
+# Local Wi-Fi credentials — never commit
+secrets.h
