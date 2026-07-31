@@ -7,8 +7,9 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH110X.h>
 
-const char* ssid     = "THANISH";
-const char* password = "REDACTED";
+// Wi-Fi credentials live in secrets.h (gitignored), never in tracked source.
+// Copy secrets.h.example to secrets.h and fill in your network.
+#include "secrets.h"
 
 #define TRIG_PIN    12
 #define ECHO_PIN    13
