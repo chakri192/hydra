@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="docs/water.svg" width="840" alt="" />
-
 # Project HYDRA
 
 **Real-time water level and methane monitoring for sewage chambers, on the ESP8266.**
