@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="280" viewBox="0 0 880 280">
+  <defs>
+    <linearGradient id="deep" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2f7fae" stop-opacity="0.92"/>
+      <stop offset="45%" stop-color="#1a4f74" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#071a28"/>
+    </linearGradient>
+    <radialGradient id="shaft">
+      <stop offset="0%" stop-color="#bfe9ff" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#bfe9ff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="bb"><feGaussianBlur stdDeviation="6"/></filter>
+    <clipPath id="f"><rect width="880" height="280" rx="10"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#f)">
+    <rect width="880" height="280" fill="#050a10"/>
+
+    <!-- damp chamber walls -->
+    <rect x="0" y="0" width="880" height="280" fill="#070d14"/>
+    <ellipse cx="440" cy="30" rx="300" ry="90" fill="url(#shaft)"/>
+
+    <!-- the water -->
+    <path d="M0 128 C 90 116, 150 138, 240 128 C 330 118, 390 140, 480 130 C 570 120, 640 142, 730 132 C 810 123, 850 136, 880 130 L880 280 L0 280 Z" fill="url(#deep)"/>
+
+    <!-- surface highlight -->
+    <path d="M0 128 C 90 116, 150 138, 240 128 C 330 118, 390 140, 480 130 C 570 120, 640 142, 730 132 C 810 123, 850 136, 880 130"
+          fill="none" stroke="#a9dcf5" stroke-opacity="0.65" stroke-width="1.6"/>
+    <path d="M0 134 C 90 122, 150 144, 240 134 C 330 124, 390 146, 480 136 C 570 126, 640 148, 730 138 C 810 129, 850 142, 880 136"
+          fill="none" stroke="#a9dcf5" stroke-opacity="0.18" stroke-width="3" filter="url(#bb)"/>
+
+    <!-- a drop about to land, and the ring it will make -->
+    <circle cx="452" cy="74" r="4.6" fill="#cfeaff" opacity="0.9"/>
+    <circle cx="452" cy="74" r="10" fill="#cfeaff" opacity="0.18" filter="url(#bb)"/>
+    <g fill="none" stroke="#cfeaff" stroke-opacity="0.30">
+      <ellipse cx="452" cy="132" rx="34" ry="7"/>
+      <ellipse cx="452" cy="132" rx="62" ry="12" stroke-opacity="0.18"/>
+      <ellipse cx="452" cy="132" rx="94" ry="17" stroke-opacity="0.10"/>
+    </g>
+
+    <!-- suspended particles / gas rising -->
+    <g fill="#bfe9ff" opacity="0.35">
+      <circle cx="196" cy="188" r="2.4"/><circle cx="238" cy="216" r="1.6"/><circle cx="300" cy="176" r="1.9"/>
+      <circle cx="614" cy="200" r="2.2"/><circle cx="668" cy="172" r="1.5"/><circle cx="712" cy="222" r="1.8"/>
+      <circle cx="396" cy="228" r="1.4"/><circle cx="520" cy="192" r="1.7"/>
+    </g>
+    <g fill="none" stroke="#bfe9ff" stroke-opacity="0.16">
+      <path d="M262 244 C 252 216, 274 200, 264 172"/>
+      <path d="M642 250 C 632 224, 654 208, 644 180"/>
+    </g>
+
+    <!-- depth falling away -->
+    <rect x="0" y="200" width="880" height="80" fill="#040910" opacity="0.55"/>
+  </g>
+  <rect x="0.5" y="0.5" width="879" height="279" rx="10" fill="none" stroke="#22242b"/>
+</svg>
