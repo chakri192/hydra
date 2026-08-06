@@ -101,3 +101,10 @@ Fill percentage, a level bar, live CH₄ with a status word, and a Wi-Fi indicat
 ## Known limits
 
 One real node. The weather key is client-side, so it's visible to anyone loading the dashboard — proxying the forecast through the ESP is the fix. No history: the trend chart is a 60-second window that resets on reload. No authentication on any endpoint, which is fine on a home network and not fine port-forwarded. And the MQ-4 is uncalibrated in absolute terms — good for "methane is rising", not for a number you'd report.
+
+## Contributors
+
+| | |
+|---|---|
+| [chakri192](https://github.com/chakri192) | Author |
+| [aider](https://github.com/Aider-AI/aider) | AI pair programmer |
